@@ -1,0 +1,8 @@
+username,groups,shell,sudo,expire_days
+jsmith,users,/bin/bash,false,
+mjohnson,users,/bin/bash,false,
+aadmin,users,/bin/bash,true,
+dbaker,users,/bin/bash,false,90
+sysadmin,users,/bin/bash,true,
+developer1,users,/bin/zsh,false,
+contractor1,users,/bin/bash,false,180
