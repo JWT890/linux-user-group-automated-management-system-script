@@ -129,7 +129,7 @@ check_groups() {
     fi
 }
 
-toogle_account() {
+toggle_account() {
     local username="$1"
     local action="$2"
 
@@ -151,17 +151,25 @@ toogle_account() {
         return 1
     fi
 }
+list_users() {
+    echo "System Users (UID >= 1000):"
+    echo "----------------------------"
+    awk -F: '$3 >= 1000 && $3 < 65534 {print $1}' /etc/passwd | while read -r user; do
+        printf "%-15s %s\n" "$user" "$(groups "$user" | cut -d: -f2)"
+    done
+    log_action "Listed all users"
+}
 
 show_menu() {
     echo "Linux User Management Script"
     echo "1) Create User"
-    echo "2) Delete user"
-    echo "3) Add user to group"
-    echo "4) Remove User from group"
-    echo "5) Check user permissions"
-    echo "6) Lock/Unlock user account"
-    echo "7) Check user groups"
-    echo "8) View log"
+    echo "2) Delete User"
+    echo "3) Add User to Group"
+    echo "4) Remove User from Group"
+    echo "5) Lock/Unlock Account"
+    echo "6) Check User Groups"
+    echo "7) List All Users"
+    echo "8) View Log"
     echo "0) Exit"
 }
 
@@ -201,17 +209,22 @@ main () {
             5)
                 read -rp "Username: " username
                 read -rp "Action (lock/unlock): " action
-                toogle_account "$username" "$action"
+                toggle_account "$username" "$action"
                 ;;
             6)
                 read -rp "Username: " username
                 check_groups "$username"
                 ;;
+            7)
+                list_users
+                ;;
             8)
                 if [[ -f "$LOG_FILE" ]]; then
+                    echo "Last 20 log entries:"
+                    echo "----------------------------"
                     tail -n 20 "$LOG_FILE"
                 else
-                    echo "No log file found"
+                    echo "❌ No log file found"
                 fi
                 ;;
             0)
@@ -219,7 +232,7 @@ main () {
                 exit 0
                 ;;
             *)
-                echo "Invalid option. Choose between 0-9"
+                echo "❌ Invalid option. Choose between 0-8"
                 ;;
         esac
 

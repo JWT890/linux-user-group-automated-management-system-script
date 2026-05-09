@@ -21,3 +21,9 @@
 2026-05-08 23:33:12 - Deleted user bob
 2026-05-08 23:33:30 - Created user bob with groups: group
 2026-05-08 23:34:37 - Listed all users
+2026-05-08 23:44:05 - Failed: User bob already exists
+2026-05-08 23:44:15 - Listed all users
+2026-05-08 23:44:42 - User bob is in group 
+2026-05-08 23:45:00 - Unlocked user account: bob
+2026-05-08 23:45:22 - User bob is in group 
+2026-05-08 23:45:29 - User ula is in group 
