@@ -9,3 +9,15 @@
 2026-05-05 23:30:49 - User janedoe does not have permission read
 2026-05-05 23:31:24 - User janedoe is in group finance
 2026-05-05 23:31:46 - Deleted user janedoe
+2026-05-08 16:47:15 - Failed to assign permission @2 to user $1
+2026-05-08 16:51:56 - User $1 does not have permission @2
+2026-05-08 23:26:26 - Failed: User handoe already exists
+2026-05-08 23:26:55 - Failed: User jane already exists
+2026-05-08 23:27:20 - Failed: User ula already exists
+2026-05-08 23:30:05 - Created user  with groups: group
+2026-05-08 23:31:19 - Created user bob with groups: group
+2026-05-08 23:32:56 - Failed: User bob does not exist
+2026-05-08 23:33:05 - Created user bob with groups: gropu
+2026-05-08 23:33:12 - Deleted user bob
+2026-05-08 23:33:30 - Created user bob with groups: group
+2026-05-08 23:34:37 - Listed all users
