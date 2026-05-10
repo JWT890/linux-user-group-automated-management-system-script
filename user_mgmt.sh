@@ -8,6 +8,72 @@ log_action() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "$timestamp - $1" >> "$LOG_FILE"
 }
+# function to check if a user exists
+check_user_exists() {
+    if id "$1" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# function to see if a group exists
+check_group_exists() {
+    if getent group "$1" &>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+# function to create a group
+create_group() {
+    if ! check_group_exists "$1"; then
+        sudo groupadd "$1"
+        if [ $? -eq 0 ]; then
+            echo "Group $1 created succesfully"
+        else
+            echo "Eror creating group $1"
+            return 1
+        fi
+    else
+        echo "Group $1 already exists"
+    fi
+    return 0
+}
+
+# function to list all groups on the system
+list_groups() {
+    awk -F':' 'BEGIN { print "ID\tName\tAge" } { print $1 "\t" $2 "\t" $3 }' /etc/group
+}
+# function to change user password
+change_user_password() {
+    # checks to see if the user exists, if so it will change the password, if not it will say the user doesn't exist
+    if check_user_exists "$1"; then
+        sudo passwd "$1"
+        if [ $? -eq 0 ]; then
+            echo "Password for user $1 changed successfully."
+        else
+            echo "Error changing password for user $1."
+        fi
+    else
+        echo "User $1 does not exist."
+    fi
+}
+
+# Function to change group password
+change_group_password() {
+    if check_group_exists "$1"; then
+        sudo passwd "$1"
+        if [ $? -eq 0 ]; then
+            echo "Password for group $1 changed successfully."
+        else
+            echo "Error changing password for group $1."
+        fi
+    else
+        echo "Group $1 does not exist."
+    fi
+}
+
 
 # creates a user with the input username and group
 create_user() {
@@ -62,6 +128,7 @@ delete_user() {
     log_action "Deleted user $username"
 }
 
+# function to add a user to a group
 add_to_group() {
     local username="$1"
     local group ="$2"
@@ -83,6 +150,7 @@ add_to_group() {
     log_action "Added $username to group: $group"
 }
 
+# function to remove a user from a group
 remove_from_group() {
     local username="$1"
     local group="$2"
@@ -129,6 +197,7 @@ check_groups() {
     fi
 }
 
+# function to lock or unlock a user account
 toggle_account() {
     local username="$1"
     local action="$2"
@@ -151,6 +220,7 @@ toggle_account() {
         return 1
     fi
 }
+# function to list all users on the system with their groups
 list_users() {
     echo "System Users (UID >= 1000):"
     echo "----------------------------"
@@ -168,7 +238,7 @@ show_menu() {
     echo "4) Remove User from Group"
     echo "5) Lock/Unlock Account"
     echo "6) Check User Groups"
-    echo "7) List All Users"
+    echo "7) List Groups"
     echo "8) View Log"
     echo "0) Exit"
 }
@@ -191,6 +261,8 @@ main () {
                 read -rp "Username: " username
                 read -rp "Groups (space-separated): " groups
                 create_user "$username" $groups
+                read -rp "New password for $username: " new_password
+                change_user_password "$username" "$new_password"
                 ;;
             2)
                 read -rp "Username: " username
@@ -216,7 +288,7 @@ main () {
                 check_groups "$username"
                 ;;
             7)
-                list_users
+                list_groups
                 ;;
             8)
                 if [[ -f "$LOG_FILE" ]]; then
